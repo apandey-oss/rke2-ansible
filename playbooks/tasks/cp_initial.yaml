@@ -24,11 +24,21 @@
         name: rke2-server
         state: started
         enabled: yes
+    
+    - name: copy kubeconfig to /tmp
+      ansible.builtin.command: > 
+        cp /etc/rancher/rke2/rke2.yaml /tmp/kubeconfig.yml
 
-    - name: fetch KUBECONFIG
+    - name: update kubeconfig
+      ansible.builtin.lineinfile:
+        path: /tmp/kubeconfig.yml
+        regexp: 'server: https://127.0.0.1:6443'
+        line: "    server: https://{{ RKE2_INITSERVER }}:6443"
+
+    - name: fetch updated KUBECONFIG
       ansible.builtin.fetch:
-        src: /etc/rancher/rke2/rke2.yaml
-        dest: kubeconfig.yaml
+        src: /tmp/kubeconfig.yml
+        dest: ../kubeconfig
         flat: yes
 
   when: rke2_cluster_type == 'management' and rke2_node_type == 'cp_initial'
