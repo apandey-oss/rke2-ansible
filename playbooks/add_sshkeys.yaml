@@ -1,0 +1,24 @@
+- name: Initialize the Systems
+  hosts: all
+  become: true
+  
+  tasks:
+  # Ensure that legacy autofs configurations are disabled
+  - name: enable root ssh login
+    ansible.builtin.command:
+      cmd: sed -i 's/^#PermitRootLogin yes/PermitRootLogin yes/' /etc/ssh/sshd_config
+    failed_when: false
+    changed_when: false
+    check_mode: false
+    register: root_ssh_enabled
+
+  - name: Set authorized key taken from file
+    authorized_key:
+      user: root
+      state: present
+      key: "{{ lookup('file', '~/.ssh/id_ed25519.pub') }}"
+
+  - name: restart sshd service
+    ansible.builtin.systemd:
+      name: sshd
+      state: restarted

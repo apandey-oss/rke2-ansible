@@ -1,0 +1,34 @@
+---
+- name: install dependencies
+  ansible.builtin.yum:
+    name:
+      - iscsi-initiator-utils
+      - cryptsetup
+      - nfs-utils
+      - curl
+    state: present
+
+- name: Ensure iscsid
+  ansible.builtin.service:
+    name: iscsid
+    state: started
+    enabled: yes
+
+- name: disable firewalld
+  ansible.builtin.systemd:
+    name: firewalld
+    enabled: no
+    state: stopped
+
+- name: update all packages
+  ansible.builtin.dnf:
+    name: "*"
+    state: latest
+
+- name: clean dnf packages
+  ansible.builtin.command: >
+    dnf clean all
+
+- name: disable selinux
+  ansible.builtin.command: >
+    setenforce 0

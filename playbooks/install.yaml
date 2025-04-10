@@ -1,0 +1,18 @@
+---
+- name: Install the RKE2 on servers
+  hosts: rke
+  become: true
+  
+  tasks:
+  - name: tasks/00_directories.yaml
+    import_tasks: tasks/00_directories.yaml
+
+  - name: tasks/01_common.yaml
+    import_tasks: tasks/01_common.yaml
+
+  - name: install control plane
+    ansible.builtin.include_tasks: "tasks/{{ rke2_node_type }}.yaml"
+    when: rke2_node_type is defined
+
+  - name: run post install
+    import_tasks: tasks/zz_postinstall.yaml

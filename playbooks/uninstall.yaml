@@ -1,0 +1,46 @@
+---
+- name: Uninstall rke2 service 
+  hosts: all
+  become: true
+  
+  tasks:
+  - name: Stop rke2-server service
+    ansible.builtin.service:
+      name: rke2-server
+      state: stopped
+    ignore_errors: yes
+
+  - name: Run the rke2-uninstall.sh command
+    ansible.builtin.shell: >
+      sh /usr/bin/rke2-uninstall.sh
+    ignore_errors: yes
+
+  - name: Remove /etc/rancher/rke2 directory
+    ansible.builtin.file:
+      name: /etc/rancher/rke2
+      state: absent
+
+  - name: Remove /opt/rke2 directory
+    ansible.builtin.file:
+      name: /opt/rke2
+      state: absent
+
+  - name: Remove /opt/longhorn_storage directory
+    ansible.builtin.file:
+      name: /opt/longhorn_storage
+      state: absent
+
+  - name: Remove /var/lib/rancher/rke2 directory
+    ansible.builtin.file:
+      name: /var/lib/rancher/rke2
+      state: absent
+
+  - name: Remove /var/lib/longhorn directory
+    ansible.builtin.file:
+      name: /var/lib/longhorn
+      state: absent
+
+  - name: Reboot the machine
+    ansible.builtin.reboot:
+      msg: "Rebooting the system"
+      reboot_timeout: 600

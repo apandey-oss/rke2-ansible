@@ -1,0 +1,31 @@
+---
+# The following tasks will deploy common settings for RKE2 clusters
+# managed RHEL 8 systems.
+
+# - name: Ensure that /etc/rancher exists
+#   ansible.builtin.file:
+#     name: /etc/rancher
+#     state: directory
+#     owner: root
+#     group: root
+
+- name: Ensure that /etc/rancher/rke2 exists
+  ansible.builtin.file:
+    name: /etc/rancher/rke2
+    state: directory
+    owner: root
+    group: root
+
+- name: Ensure that /opt/rke2 exists
+  ansible.builtin.file:
+    name: /opt/rke2
+    state: directory
+    owner: root
+    group: root
+
+- name: Ensure that /opt/longhorn_storage exists
+  ansible.builtin.file:
+    name: /opt/longhorn_storage
+    state: directory
+    owner: root
+    group: root

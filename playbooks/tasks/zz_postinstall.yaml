@@ -1,0 +1,24 @@
+---
+## Deploy initial RKE2 master
+
+- name: Post install on management servers
+  block:
+    - name: check latest kubectl version
+      ansible.builtin.command: curl -L -s https://dl.k8s.io/release/stable.txt
+      register: kubectl_version
+
+    - name: install kubectl
+      ansible.builtin.get_url:
+        url: https://dl.k8s.io/release/{{ kubectl_version.stdout }}/bin/linux/amd64/kubectl
+        dest: /usr/local/bin/kubectl
+        mode: '0755'
+        owner: root
+        group: root
+    
+    - name: Add a line to ~/.bashrc
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.bashrc"
+        line: 'export KUBECONFIG=/etc/rancher/rke2/rke2.yaml'
+        state: present
+
+  when: rke2_cluster_type == 'management'

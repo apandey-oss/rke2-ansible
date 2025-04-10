@@ -1,0 +1,31 @@
+---
+## Deploy additional RKE2 master nodes
+
+- name: Configure additional RKE2 management masters for HA
+  block:
+    - name: run install script
+      ansible.builtin.shell: >
+        curl -sfL https://get.rke2.io | INSTALL_RKE2_TYPE=server sh -
+
+    - name: Copy /etc/rancher/rke2/config.yaml
+      ansible.builtin.template:
+        src: templates/init_addnode_config.yaml.j2
+        dest: /etc/rancher/rke2/config.yaml
+        owner: root
+        group: root
+        mode: '0644'
+      register: config_copied
+
+    - name: Ensure rke2-server service is started and enabled
+      ansible.builtin.service:
+        name: rke2-server
+        state: started
+        enabled: yes
+
+    - name: start and enable rke2-server service
+      ansible.builtin.service:
+        name: rke2-server
+        state: started
+        enabled: yes
+
+  when: rke2_cluster_type == 'management' and rke2_node_type == 'cp_additional'
