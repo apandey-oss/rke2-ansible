@@ -6,16 +6,16 @@
     owner: root
     group: root
 
-- name: Ensure that /opt/rke2 exists
+- name: Ensure that "{{ RKE_DATA_DIR }}" exists
   ansible.builtin.file:
-    name: /opt/rke2
+    name: "{{ RKE_DATA_DIR }}"
     state: directory
     owner: root
     group: root
 
-- name: Ensure that /opt/longhorn_storage exists
+- name: Ensure that longhorn-storage exists
   ansible.builtin.file:
-    name: /opt/longhorn_storage
+    name: "{{ RKE_LONGHORN_DIR }}"
     state: directory
     owner: root
     group: root

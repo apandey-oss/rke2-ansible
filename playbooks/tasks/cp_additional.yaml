@@ -1,6 +1,4 @@
 ---
-## Deploy additional RKE2 master nodes
-
 - name: Configure additional RKE2 management masters for HA
   block:
     - name: run install script

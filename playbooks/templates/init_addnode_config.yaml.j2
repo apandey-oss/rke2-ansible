@@ -1,6 +1,6 @@
-server: https://{{ rke2_initserver }}:9345
-token: DZ1lJS3dZQkJRVUhBd0l3Ckh3WURWUjBqQkJnd0ZvQVVUSVZFTFFQV3lLbCtRaWdINnpPN2F0cmFZclV3Q2dZSUtvWkl6ajBFQXdJRFJ3QXcKUkFJZ01MQjZXVThxMlhFdFVnRWpOK0hqRnpWRVVwd0l3OHpHb3dMM01ZOS85aklDSUYrdHhnaz
+token: {{ RKE_TOKEN }}
 cluster-cidr: 10.104.0.0/16
 service-cidr: 10.105.0.0/16
 cluster-dns: 10.105.0.10
-data-dir: "/opt/rke2"
+data-dir: "{{ RKE_DATA_DIR }}"
+server: https://{{ RKE2_INITSERVER }}:9345

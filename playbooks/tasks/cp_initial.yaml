@@ -1,6 +1,4 @@
 ---
-## Deploy initial RKE2 master
-
 - name: Configure initial RKE2 management master
   block:
     - name: run install script

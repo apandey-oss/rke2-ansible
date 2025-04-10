@@ -1,22 +1,29 @@
 ---
 - name: Post install on management servers
   block:
-    - name: check latest kubectl version
-      ansible.builtin.command: curl -L -s https://dl.k8s.io/release/stable.txt
-      register: kubectl_version
+    - name: Find kubectl binary
+      ansible.builtin.find:
+        paths: "{{ RKE_DATA_DIR }}/data/"
+        patterns: kubectl
+        file_type: file
+        recurse: true
+      register: kubectl_files
 
-    - name: install kubectl
-      ansible.builtin.get_url:
-        url: https://dl.k8s.io/release/{{ kubectl_version.stdout }}/bin/linux/amd64/kubectl
+    - name: Create symbolic link for kubectl
+      file:
+        src: "{{ kubectl_files.files[0].path }}"
         dest: /usr/local/bin/kubectl
-        mode: '0755'
-        owner: root
-        group: root
+        state: link
+      when: kubectl_files.matched > 0
 
     - name: Add a line to ~/.bashrc
       ansible.builtin.lineinfile:
         path: "{{ ansible_env.HOME }}/.bashrc"
         line: 'export KUBECONFIG=/etc/rancher/rke2/rke2.yaml'
         state: present
+
+    - name: install latest helm 
+      ansible.builtin.shell: |
+        curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
   when: rke2_cluster_type == 'management'

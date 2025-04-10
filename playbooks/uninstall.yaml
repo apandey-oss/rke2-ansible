@@ -20,24 +20,34 @@
       name: /etc/rancher/rke2
       state: absent
 
-  - name: Remove /opt/rke2 directory
+  - name: Remove "{{ RKE_DATA_DIR }}" directory
     ansible.builtin.file:
-      name: /opt/rke2
+      name: "{{ RKE_DATA_DIR }}"
       state: absent
 
-  - name: Remove /opt/longhorn_storage directory
+  - name: Remove "{{ RKE_LONGHORN_DIR }}" directory
     ansible.builtin.file:
-      name: /opt/longhorn_storage
+      name: "{{ RKE_LONGHORN_DIR }}"
       state: absent
 
-  - name: Remove /var/lib/rancher/rke2 directory
+  - name: Remove data-dir directory
     ansible.builtin.file:
-      name: /var/lib/rancher/rke2
+      name: "{{ RKE_DATA_DIR }}"
       state: absent
 
-  - name: Remove /var/lib/longhorn directory
+  - name: Remove longhorn-dir directory
     ansible.builtin.file:
-      name: /var/lib/longhorn
+      name: "{{ RKE_LONGHORN_DIR }}"
+      state: absent
+
+  - name: Remove /usr/local/bin/helm
+    ansible.builtin.file:
+      name: /usr/local/bin/helm
+      state: absent
+
+  - name: Remove /usr/local/bin/kubectl
+    ansible.builtin.file:
+      name: /usr/local/bin/kubectl
       state: absent
 
   - name: Reboot the machine
