@@ -1,6 +1,4 @@
 ---
-## Deploy initial RKE2 master
-
 - name: Post install on management servers
   block:
     - name: check latest kubectl version
@@ -14,7 +12,7 @@
         mode: '0755'
         owner: root
         group: root
-    
+
     - name: Add a line to ~/.bashrc
       ansible.builtin.lineinfile:
         path: "{{ ansible_env.HOME }}/.bashrc"
