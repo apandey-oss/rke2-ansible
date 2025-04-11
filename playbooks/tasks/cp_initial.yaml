@@ -7,7 +7,7 @@
 
     - name: Copy /etc/rancher/rke2/config.yaml
       ansible.builtin.template:
-        src: templates/init_node_config.yaml.j2
+        src: templates/rke_config.yaml.j2
         dest: /etc/rancher/rke2/config.yaml
         owner: root
         group: root

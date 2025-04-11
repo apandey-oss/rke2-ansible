@@ -1,0 +1,57 @@
+---
+- name: Install Certmanager
+  block:
+    - name: add certmanager helm chart
+      ansible.builtin.shell: >
+        helm repo add jetstack https://charts.jetstack.io --force-update
+
+    - name: Install certmanager using helm
+      ansible.builtin.shell: >
+        helm upgrade -i cert-manager jetstack/cert-manager
+        -n cert-manager --create-namespace
+        --set crds.enabled=true
+
+    - name: Pause for 2 minutes
+      ansible.builtin.pause:
+        minutes: 2
+
+  when: rke2_cluster_type == 'management' and rke2_node_type == 'cp_initial'
+
+- name: install Longhorn Storage on cluster
+  block:
+    - name: add longhorn helm chart
+      ansible.builtin.shell: >
+        helm repo add longhorn https://charts.longhorn.io --force-update
+
+    - name: install longhorn through helm chart
+      ansible.builtin.shell: >
+        helm install longhorn longhorn/longhorn 
+        --namespace longhorn-system --create-namespace
+        --set defaultSettings.defaultDataPath="{{RKE_LONGHORN_DIR}}"
+
+    - name: Pause for 2 minutes
+      ansible.builtin.pause:
+        minutes: 2
+
+  when: rke2_cluster_type == 'management' and rke2_node_type == 'cp_initial'
+
+- name: install Rancher manager
+  block:
+    - name: add rancher chart
+      ansible.builtin.shell: >
+        helm repo add rancher-latest https://releases.rancher.com/server-charts/latest --force-update
+
+    - name: install rancher through helm chart
+      ansible.builtin.shell: >
+        helm upgrade -i rancher rancher-latest/rancher
+        --create-namespace
+        --namespace cattle-system 
+        --set hostname={{ RKE_RANCHER_FQDN }}
+        --set bootstrapPassword={{ RKE_RANCHER_BOOTSTRAP_SECRET }} 
+        --set replicas=1
+
+    - name: Pause for 2 minutes
+      ansible.builtin.pause:
+        minutes: 2
+
+  when: rke2_cluster_type == 'management' and rke2_node_type == 'cp_initial'

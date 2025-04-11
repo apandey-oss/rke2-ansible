@@ -7,12 +7,18 @@
 
     - name: Copy /etc/rancher/rke2/config.yaml
       ansible.builtin.template:
-        src: templates/init_addnode_config.yaml.j2
+        src: templates/rke_config.yaml.j2
         dest: /etc/rancher/rke2/config.yaml
         owner: root
         group: root
         mode: '0644'
       register: config_copied
+    
+    - name: add server line in config
+      ansible.builtin.lineinfile:
+        path: /etc/rancher/rke2/config.yaml
+        line: "server: https://{{ RKE2_INITSERVER }}:9345"
+        create: yes
 
     - name: Ensure rke2-server service is started and enabled
       ansible.builtin.service:

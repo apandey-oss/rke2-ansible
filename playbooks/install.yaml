@@ -16,3 +16,6 @@
 
   - name: run post install
     import_tasks: tasks/zz_postinstall.yaml
+
+  - name: configure cluster with tools
+    import_tasks: tasks/zzz_configure_cluster_base.yaml
