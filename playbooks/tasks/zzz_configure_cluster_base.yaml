@@ -1,22 +1,4 @@
 ---
-- name: Install Certmanager
-  block:
-    - name: add certmanager helm chart
-      ansible.builtin.shell: >
-        helm repo add jetstack https://charts.jetstack.io --force-update
-
-    - name: Install certmanager using helm
-      ansible.builtin.shell: >
-        helm upgrade -i cert-manager jetstack/cert-manager
-        -n cert-manager --create-namespace
-        --set crds.enabled=true
-
-    - name: Pause for 2 minutes
-      ansible.builtin.pause:
-        minutes: 2
-
-  when: rke2_cluster_type == 'management' and rke2_node_type == 'cp_initial'
-
 - name: install Longhorn Storage on cluster
   block:
     - name: add longhorn helm chart
@@ -32,7 +14,23 @@
     - name: Pause for 2 minutes
       ansible.builtin.pause:
         minutes: 2
+  when: rke2_cluster_type == 'management' and rke2_node_type == 'cp_initial'
 
+- name: Install Certmanager
+  block:
+    - name: add certmanager helm chart
+      ansible.builtin.shell: >
+        helm repo add jetstack https://charts.jetstack.io --force-update
+
+    - name: Install certmanager using helm
+      ansible.builtin.shell: >
+        helm upgrade -i cert-manager jetstack/cert-manager
+        -n cert-manager --create-namespace
+        --set crds.enabled=true
+
+    - name: Pause for 2 minutes
+      ansible.builtin.pause:
+        minutes: 2
   when: rke2_cluster_type == 'management' and rke2_node_type == 'cp_initial'
 
 - name: install Rancher manager

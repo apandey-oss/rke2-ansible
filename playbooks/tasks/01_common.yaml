@@ -29,6 +29,13 @@
   ansible.builtin.command: >
     dnf clean all
 
-- name: disable selinux
+- name: disable selinux temporarily
   ansible.builtin.command: >
     setenforce 0
+  ignore_errors: yes
+
+- name: set to disable selinux in config
+  ansible.builtin.lineinfile:
+    path: /etc/selinux/config
+    line: SELINUX=disabled
+    regexp: '^SELINUX='
